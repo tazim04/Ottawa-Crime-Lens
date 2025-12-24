@@ -28,11 +28,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    - name: Formatting
-      run: mvn spotless:check
-    
-    - name: Tests
-      run: mvn test
+    - name: Run the Maven verify
+      run: mvn verify
 
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     - name: Update dependency graph

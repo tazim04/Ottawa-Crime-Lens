@@ -2,7 +2,7 @@ package com.crimelens.crimelens_pipeline;
 
 import org.junit.jupiter.api.Test;
 
-class CrimelensPipelineApplicationTests {
+class CrimeLensPipelineApplicationTests {
 
   @Test
   void applicationClassLoads() {

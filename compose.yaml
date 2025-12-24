@@ -3,7 +3,7 @@ services:
     image: postgis/postgis:15-3.3
     container_name: crimelens-postgis
     environment:
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: crimelens
       POSTGRES_USER: user
       POSTGRES_PASSWORD: pass
     ports:
@@ -11,10 +11,21 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user -d mydatabase"]
+      test: [ "CMD-SHELL", "pg_isready -U user -d crimelens" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  pipeline:
+    build: .
+    container_name: crimelens-pipeline
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:

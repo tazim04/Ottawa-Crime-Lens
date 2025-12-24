@@ -2,12 +2,13 @@ package com.crimelens.crimelens_pipeline.service;
 
 import com.crimelens.crimelens_pipeline.client.OttawaCrimeApiClient;
 import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
-import com.crimelens.crimelens_pipeline.dto.OttawaCrimeApiResponseDTO;
 import com.crimelens.crimelens_pipeline.mapper.CrimeRecordMapper;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import com.crimelens.crimelens_pipeline.repository.CrimeRecordRepository;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,32 +16,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CrimeIngestionService {
 
+  private static final int PAGE_SIZE = 1000;
+
   private final OttawaCrimeApiClient apiClient;
   private final CrimeRecordRepository repository;
   private final CrimeRecordMapper mapper;
 
   public void ingest() {
+    LocalDateTime lastRepDate =
+        Optional.ofNullable(repository.findLatestReportedDate())
+            .orElse(LocalDateTime.of(1970, 1, 1, 0, 0));
+    int offset = 0;
 
-    OttawaCrimeApiResponseDTO response = apiClient.fetchCrimeData();
+    while (true) {
+      List<FeatureDTO> features = apiClient.fetchCrimeData(offset, PAGE_SIZE, lastRepDate);
 
-    if (response == null || response.getFeatures() == null) {
-      return;
-    }
+      if (features.isEmpty()) {
 
-    // Ingest crime records in chunks of 1000 since the Ottawa Police dataset includes 200k+ records
-    List<CrimeRecord> chunk = new ArrayList<>();
-    for (FeatureDTO f : response.getFeatures()) {
-      CrimeRecord record = mapper.toEntity(f);
-      chunk.add(mapper.toEntity(f));
-
-      if (chunk.size() == 1000) {
-        repository.saveAll(chunk);
-        chunk.clear();
+        break;
       }
-    }
 
-    if (!chunk.isEmpty()) {
-      repository.saveAll(chunk);
+      // Convert features from DTO -> Entity
+      List<CrimeRecord> records = new ArrayList<>(features.size());
+      for (FeatureDTO f : features) {
+        records.add(mapper.toEntity(f));
+      }
+
+      // Store in DB
+      repository.saveAll(records);
+      offset += PAGE_SIZE;
     }
   }
 }

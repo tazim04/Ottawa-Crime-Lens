@@ -4,8 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.crimelens.crimelens_pipeline.client.OttawaCrimeApiClient;
-import com.crimelens.crimelens_pipeline.dto.OttawaCrimeApiResponseDTO;
+import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +16,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 
 class OttawaCrimeApiClientTest {
+  private static final LocalDateTime DATE_DEFAULT = LocalDateTime.of(1970, 1, 1, 0, 0);
+  private static final int PAGE_SIZE = 1000;
 
   private MockWebServer server;
   private OttawaCrimeApiClient client;
@@ -36,11 +40,10 @@ class OttawaCrimeApiClientTest {
             .setBody("{\"features\": []}")
             .addHeader("Content-Type", "application/json"));
 
-    OttawaCrimeApiResponseDTO response = client.fetchCrimeData();
-    System.out.println(response);
+    List<FeatureDTO> features = client.fetchCrimeData(0, PAGE_SIZE, DATE_DEFAULT);
+    System.out.println(features);
 
-    assertNotNull(response, "Response should not be null!");
-    assertNotNull(response.getFeatures(), "Features should not be null!");
-    assertEquals(0, response.getFeatures().size(), "Features should not be empty!");
+    assertNotNull(features, "Features list should not be null!");
+    assertEquals(0, features.size(), "Features list should not be empty!");
   }
 }

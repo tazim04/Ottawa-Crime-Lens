@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 class CrimeIngestionServiceTest {
 
-  private static final int PAGE_SIZE = 1000;
+  private static final int PAGE_SIZE = 2000;
   private static final LocalDateTime DATE_DEFAULT = LocalDateTime.of(1970, 1, 1, 0, 0);
 
   CrimeIngestionService service;

@@ -41,11 +41,8 @@ public class CrimeRecordMapper {
     record.setOffenceCategory((attr.getOFF_CATEG()));
 
     record.setNeighbourhood(attr.getNB_NAME_EN());
-    record.setSector(attr.getSECTOR());
-    record.setDivision(attr.getDIVISION());
     record.setCensusTract(attr.getCENSUS_TRC());
     record.setWard(attr.getWARD());
-    record.setCouncillor(attr.getCOUNCILLOR());
     record.setIntersection(attr.getINTERSECTION());
     record.setTimeOfDay(attr.getTOD());
 

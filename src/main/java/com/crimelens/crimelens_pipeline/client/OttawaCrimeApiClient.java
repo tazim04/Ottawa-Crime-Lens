@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OttawaCrimeApiClient {
@@ -22,28 +24,34 @@ public class OttawaCrimeApiClient {
   // Function to fetch crime data from the public Ottawa Police API, implements pagination to handle
   // the 200k+ records
   public List<FeatureDTO> fetchCrimeData(int offset, int pageSize, LocalDateTime lastRepDate) {
-    long lastRepDateMillis = lastRepDate.atZone(ZoneOffset.UTC).toInstant().toEpochMilli();
+    String arcgisDate =
+        lastRepDate.atZone(ZoneOffset.UTC).toLocalDateTime().toString().replace("T", " ");
+
+    String whereClause = "REP_DATE > TIMESTAMP '" + arcgisDate + "'";
 
     OttawaCrimeApiResponseDTO response =
         ottawaPoliceApiClient
             .get()
             .uri(
-                uriBuilder ->
-                    uriBuilder
-                        .path(crimePath)
-                        .queryParam("where", "REP_DATE > " + lastRepDateMillis)
-                        .queryParam("where", "1=1")
-                        .queryParam("outFields", "*")
-                        .queryParam("outSR", "4326")
-                        .queryParam("f", "json")
-                        .queryParam("resultOffset", offset)
-                        .queryParam("resultRecordCount", pageSize)
-                        .build())
+                uriBuilder -> {
+                  var uri =
+                      uriBuilder
+                          .path(crimePath)
+                          .queryParam("where", whereClause)
+                          .queryParam("outFields", "*")
+                          .queryParam("outSR", "4326")
+                          .queryParam("f", "json")
+                          .queryParam("resultOffset", offset)
+                          .queryParam("resultRecordCount", pageSize)
+                          .queryParam("returnExceededLimitFeatures", true)
+                          .queryParam("orderByFields", "REP_DATE ASC")
+                          .build();
+                  log.debug("ArcGIS request URI: {}", uri);
+                  return uri;
+                })
             .retrieve()
             .bodyToMono(OttawaCrimeApiResponseDTO.class)
             .block();
-
-    System.out.println("response = " + response);
 
     return response != null && response.getFeatures() != null ? response.getFeatures() : List.of();
   }

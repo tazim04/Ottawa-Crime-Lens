@@ -14,11 +14,8 @@ public class AttributesDTO {
   private String OFF_SUM;
   private String OFF_CATEG;
   private String NB_NAME_EN;
-  private String SECTOR;
-  private String DIVISION;
   private String CENSUS_TRC;
   private String TOD;
   private String WARD;
-  private String COUNCILLOR;
   private String INTERSECTION;
 }

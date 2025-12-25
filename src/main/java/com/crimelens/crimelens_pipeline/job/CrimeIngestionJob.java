@@ -4,11 +4,13 @@ import com.crimelens.crimelens_pipeline.service.CrimeIngestionService;
 import java.util.concurrent.locks.ReentrantLock;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
+@ConditionalOnProperty(name = "pipeline.cron.enabled", havingValue = "true")
 @RequiredArgsConstructor
 public class CrimeIngestionJob {
 
@@ -17,6 +19,7 @@ public class CrimeIngestionJob {
 
   @Scheduled(cron = "${pipeline.cron}")
   public void run() {
+    log.info("Starting up scheduled pipeline ingestion job!!!!!!!!!!!!!!!!");
     // Try to acquire the lock to ensure no other instance of the pipeline is running
     if (!lock.tryLock()) {
       log.warn("Previous ingestion still running - skipping this run!");

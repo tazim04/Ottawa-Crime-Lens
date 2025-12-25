@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 class OttawaCrimeApiClientTest {
   private static final LocalDateTime DATE_DEFAULT = LocalDateTime.of(1970, 1, 1, 0, 0);
-  private static final int PAGE_SIZE = 1000;
+  private static final int PAGE_SIZE = 2000;
 
   private MockWebServer server;
   private OttawaCrimeApiClient client;

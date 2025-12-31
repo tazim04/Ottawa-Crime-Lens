@@ -24,7 +24,7 @@ public class CrimeIngestionService {
   private final CrimeRecordRepository repository;
   private final CrimeRecordMapper mapper;
 
-  public void ingest() {
+  public void run() {
     log.info("Ingestion in progress.........");
     LocalDateTime lastRepDate =
         Optional.ofNullable(repository.findLatestReportedDate())

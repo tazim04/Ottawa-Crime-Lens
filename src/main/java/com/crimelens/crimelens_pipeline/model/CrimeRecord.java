@@ -14,8 +14,8 @@ import org.locationtech.jts.geom.Point;
 public class CrimeRecord {
 
   @Id
-  @Column(name = "id")
-  private Long id; // From OBJECTID in the original API response
+  @Column(name = "incident_id")
+  private Long incidentId; // From OBJECTID in the original API response
 
   @Column(name = "year")
   private Integer year;

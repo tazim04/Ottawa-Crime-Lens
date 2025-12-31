@@ -39,7 +39,7 @@ class CrimeIngestionServiceTest {
     // Second page is empty -> ingestion stops
     when(client.fetchCrimeData(PAGE_SIZE, PAGE_SIZE, DATE_DEFAULT)).thenReturn(List.of());
 
-    service.ingest();
+    service.run();
 
     verify(repository).saveAll(any());
     verify(client, times(2)).fetchCrimeData(anyInt(), eq(PAGE_SIZE), eq(DATE_DEFAULT));

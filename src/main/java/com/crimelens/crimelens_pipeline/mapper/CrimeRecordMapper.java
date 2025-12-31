@@ -26,7 +26,7 @@ public class CrimeRecordMapper {
 
     CrimeRecord record = new CrimeRecord();
 
-    record.setId(attr.getOBJECTID());
+    record.setIncidentId(attr.getOBJECTID());
 
     record.setYear(attr.getYEAR());
     record.setReportedDate(toLocalDateTime(attr.getREP_DATE()));

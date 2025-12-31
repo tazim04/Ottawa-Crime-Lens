@@ -1,7 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TABLE IF NOT EXISTS crime_records (
-    id BIGINT PRIMARY KEY,
+    incident_id BIGINT PRIMARY KEY,
     year INT,
     reported_date TIMESTAMP,
     reported_hour INT,

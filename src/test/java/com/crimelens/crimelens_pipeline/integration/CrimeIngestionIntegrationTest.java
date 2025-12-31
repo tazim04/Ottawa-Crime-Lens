@@ -62,7 +62,7 @@ class CrimeIngestionIntegrationTest {
         .thenReturn(List.of(feature)) // first page
         .thenReturn(List.of()); // second page -> terminate loop
 
-    ingestionService.ingest();
+    ingestionService.run();
 
     long count = repository.count();
     assertTrue(count > 0, "Expected crime records to be persisted into PostGIS");
@@ -80,7 +80,7 @@ class CrimeIngestionIntegrationTest {
         .thenReturn(List.of(crimeAtT1)) // first page
         .thenReturn(List.of()); // stop pagination
 
-    ingestionService.ingest();
+    ingestionService.run();
 
     long countAfterFirstRun = repository.count();
     assertEquals(1, countAfterFirstRun, "Expected 1 crime after first ingestion");
@@ -100,7 +100,7 @@ class CrimeIngestionIntegrationTest {
         .thenReturn(List.of(newCrime)) // API returns only new crime
         .thenReturn(List.of());
 
-    ingestionService.ingest();
+    ingestionService.run();
 
     // --- THEN ---
     long finalCount = repository.count();

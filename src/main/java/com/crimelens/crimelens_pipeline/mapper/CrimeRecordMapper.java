@@ -4,6 +4,7 @@ import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -30,10 +31,10 @@ public class CrimeRecordMapper {
 
     record.setYear(attr.getYEAR());
     record.setReportedDate(toLocalDateTime(attr.getREP_DATE()));
-    record.setReportedHour(attr.getREP_HOUR());
+    record.setReportedHour(hhmmToLocalTime(attr.getREP_HOUR()));
 
     record.setOccurredDate(toLocalDateTime(attr.getOCC_DATE()));
-    record.setOccurredHour(attr.getOCC_HOUR());
+    record.setOccurredHour(hhmmToLocalTime(attr.getOCC_HOUR()));
 
     record.setDayOfWeek(attr.getWEEKDAY());
 
@@ -65,5 +66,20 @@ public class CrimeRecordMapper {
     if (epochMillis == null) return null;
 
     return Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("America/Toronto")).toLocalDateTime();
+  }
+
+  // Convert Integer representation of hour to LocalTime
+  private LocalTime hhmmToLocalTime(Integer hhmm) {
+    if (hhmm == null) return null;
+
+    int hour = hhmm / 100;
+    int minute = hhmm % 100;
+
+    // defensive check
+    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+      throw new IllegalArgumentException("Invalid HHMM time: " + hhmm);
+    }
+
+    return LocalTime.of(hour, minute);
   }
 }

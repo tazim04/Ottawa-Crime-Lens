@@ -14,6 +14,13 @@ This project is designed to be run using Docker Compose for local development.
 
 ### To Start the application:
 From the project root:
+
+Build the project:
+```Bash
+mvn clean install -DSkipTests
+```
+
+And run Docker compose:
 ```Bash
 docker compose up --build
 ```

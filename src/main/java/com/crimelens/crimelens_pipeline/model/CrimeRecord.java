@@ -1,10 +1,9 @@
 package com.crimelens.crimelens_pipeline.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.crimelens.crimelens_pipeline.enums.CrimeSource;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
 
@@ -24,13 +23,13 @@ public class CrimeRecord {
   private LocalDateTime reportedDate;
 
   @Column(name = "reported_hour")
-  private Integer reportedHour;
+  private LocalTime reportedHour;
 
   @Column(name = "occurred_date")
   private LocalDateTime occurredDate;
 
   @Column(name = "occurred_hour")
-  private Integer occurredHour;
+  private LocalTime occurredHour;
 
   @Column(name = "day_of_week")
   private String dayOfWeek;
@@ -55,6 +54,10 @@ public class CrimeRecord {
 
   @Column(name = "intersection")
   private String intersection;
+
+  @Enumerated(EnumType.STRING)
+  @Column(nullable = false)
+  private CrimeSource source = CrimeSource.OFFICIAL;
 
   @Column(name = "location", columnDefinition = "geometry(Point, 4326)")
   private Point location; // PostGIS geospatial point

@@ -19,9 +19,9 @@ public final class DummyFeatureFactory {
     attributes.setOBJECTID(objectId);
     attributes.setYEAR(2024);
     attributes.setREP_DATE(repDateMillis);
-    attributes.setREP_HOUR(14);
+    attributes.setREP_HOUR(1400);
     attributes.setOCC_DATE(repDateMillis - 3600000); // 1 hour earlier
-    attributes.setOCC_HOUR(13);
+    attributes.setOCC_HOUR(1300);
     attributes.setWEEKDAY("WEDNESDAY");
     attributes.setOFF_SUM("ASSAULT");
     attributes.setOFF_CATEG("CRIMES AGAINST PERSON");

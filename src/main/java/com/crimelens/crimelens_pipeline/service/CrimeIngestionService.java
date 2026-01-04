@@ -2,6 +2,7 @@ package com.crimelens.crimelens_pipeline.service;
 
 import com.crimelens.crimelens_pipeline.client.OttawaCrimeApiClient;
 import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
+import com.crimelens.crimelens_pipeline.dto.IngestionResult;
 import com.crimelens.crimelens_pipeline.mapper.CrimeRecordMapper;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import com.crimelens.crimelens_pipeline.repository.CrimeRecordRepository;
@@ -24,7 +25,7 @@ public class CrimeIngestionService {
   private final CrimeRecordRepository repository;
   private final CrimeRecordMapper mapper;
 
-  public void run() {
+  public IngestionResult run() {
     log.info("Ingestion in progress.........");
     LocalDateTime lastRepDate =
         Optional.ofNullable(repository.findLatestReportedDate())
@@ -32,14 +33,21 @@ public class CrimeIngestionService {
     log.info("Last reported date: {}", lastRepDate);
     int offset = 0;
 
+    int totalFetched = 0;
     int totalInserted = 0;
+
     while (true) {
       List<FeatureDTO> features = apiClient.fetchCrimeData(offset, PAGE_SIZE, lastRepDate);
 
       if (features.isEmpty()) {
-        log.info("No more records returned. Ingestion complete! Total inserted={}", totalInserted);
+        log.info(
+            "No more records returned. Ingestion complete! fetched={}, inserted={}",
+            totalFetched,
+            totalInserted);
         break;
       }
+
+      totalFetched += features.size();
 
       // Convert features from DTO -> Entity
       List<CrimeRecord> records = new ArrayList<>(features.size());
@@ -53,5 +61,9 @@ public class CrimeIngestionService {
       log.info("Inserted {} records so far (offset={})", totalInserted, offset);
       offset += PAGE_SIZE;
     }
+
+    int duplicates = totalFetched - totalInserted;
+
+    return new IngestionResult(totalFetched, totalInserted, duplicates);
   }
 }

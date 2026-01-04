@@ -25,7 +25,7 @@ public class CrimeIngestionPipelineRunner implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-    try{
+    try {
       log.info("Starting CrimeLens data ingestion...");
       service.run();
       refreshAggregations();

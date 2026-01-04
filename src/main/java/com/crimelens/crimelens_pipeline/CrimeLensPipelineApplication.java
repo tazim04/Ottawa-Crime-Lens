@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CrimeLensPipelineApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(CrimeLensPipelineApplication.class, args);
+    var context = SpringApplication.run(CrimeLensPipelineApplication.class, args);
+    var exitCode = SpringApplication.exit(context);
+    System.exit(exitCode);
   }
 }

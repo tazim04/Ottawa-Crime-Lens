@@ -2,6 +2,7 @@ services:
   postgres:
     image: postgis/postgis:15-3.3
     container_name: crimelens-postgis
+    profiles: [ "local-db" ]
     environment:
       POSTGRES_DB: crimelens
       POSTGRES_USER: user
@@ -19,13 +20,8 @@ services:
   pipeline:
     build: .
     container_name: crimelens-pipeline
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-    ports:
-      - "8080:8080"
+    env_file:
+      - .env
 
 volumes:
   postgres_data:

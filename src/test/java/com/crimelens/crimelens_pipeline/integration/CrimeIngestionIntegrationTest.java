@@ -2,7 +2,6 @@ package com.crimelens.crimelens_pipeline.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -58,7 +57,7 @@ class CrimeIngestionIntegrationTest {
   void pipeline_fetches_and_persists_crime_data() {
     FeatureDTO feature = DummyFeatureFactory.createDummyFeature();
 
-    when(apiClient.fetchCrimeData(anyInt(), anyInt(), any()))
+    when(apiClient.fetchCrimeData(anyInt(), anyInt()))
         .thenReturn(List.of(feature)) // first page
         .thenReturn(List.of()); // second page -> terminate loop
 
@@ -76,7 +75,7 @@ class CrimeIngestionIntegrationTest {
 
     FeatureDTO crimeAtT1 = DummyFeatureFactory.createDummyFeature(1L, t1Millis);
 
-    when(apiClient.fetchCrimeData(anyInt(), anyInt(), any()))
+    when(apiClient.fetchCrimeData(anyInt(), anyInt()))
         .thenReturn(List.of(crimeAtT1)) // first page
         .thenReturn(List.of()); // stop pagination
 
@@ -96,7 +95,7 @@ class CrimeIngestionIntegrationTest {
      * We simulate correct API behavior:
      * only crimes AFTER lastRepDate are returned
      */
-    when(apiClient.fetchCrimeData(anyInt(), anyInt(), any()))
+    when(apiClient.fetchCrimeData(anyInt(), anyInt()))
         .thenReturn(List.of(newCrime)) // API returns only new crime
         .thenReturn(List.of());
 

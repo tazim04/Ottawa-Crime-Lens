@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-      - "pipeline-*"
 
 jobs:
   deploy:
@@ -19,8 +18,8 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Run tests (safety net)
-        run: mvn test
+      - name: Run verify
+        run: mvn verify
 
       - name: Build JAR
         run: mvn package
@@ -40,7 +39,7 @@ jobs:
 
       - name: Tag & Push Docker image
         run: |
-          IMAGE=502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline
+          IMAGE=502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens
           docker tag crimelens-pipeline:latest $IMAGE:latest
           docker tag crimelens-pipeline:latest $IMAGE:${GITHUB_REF_NAME}
           docker push $IMAGE:latest

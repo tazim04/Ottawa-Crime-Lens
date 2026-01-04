@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class GeometryDTO {
-  private Double x; // longitude
-  private Double y; // latitude
+  private Double x;
+  private Double y;
 }

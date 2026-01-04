@@ -27,7 +27,7 @@ public class OttawaCrimeApiClient {
     String arcgisDate =
         lastRepDate.atZone(ZoneOffset.UTC).toLocalDateTime().toString().replace("T", " ");
 
-    String whereClause = "REP_DATE > TIMESTAMP '" + arcgisDate + "'";
+    String whereClause = "Reported_Date > " + arcgisDate;
 
     OttawaCrimeApiResponseDTO response =
         ottawaPoliceApiClient
@@ -44,7 +44,9 @@ public class OttawaCrimeApiClient {
                           .queryParam("resultOffset", offset)
                           .queryParam("resultRecordCount", pageSize)
                           .queryParam("returnExceededLimitFeatures", true)
-                          .queryParam("orderByFields", "REP_DATE ASC")
+                          .queryParam("returnGeometry", true)
+                          //                          .queryParam("orderByFields", "Reported_Date
+                          // ASC")
                           .build();
                   log.debug("ArcGIS request URI: {}", uri);
                   return uri;

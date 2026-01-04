@@ -8,28 +8,47 @@ public final class DummyFeatureFactory {
 
   private DummyFeatureFactory() {}
 
-  public static FeatureDTO createDummyFeature(Long objectId, long repDateMillis) {
+  public static FeatureDTO createDummyFeature(Long objectId, long reportedDateMillis) {
+
     FeatureDTO feature = new FeatureDTO();
 
     GeometryDTO geometry = new GeometryDTO();
-    geometry.setX(-75.697193);
-    geometry.setY(45.421530);
+    geometry.setX(371071.72);
+    geometry.setY(5030273.56);
 
+    // Attributes (YTD schema)
     AttributesDTO attributes = new AttributesDTO();
+
+    // Identifiers
     attributes.setOBJECTID(objectId);
-    attributes.setYEAR(2024);
-    attributes.setREP_DATE(repDateMillis);
-    attributes.setREP_HOUR(1400);
-    attributes.setOCC_DATE(repDateMillis - 3600000); // 1 hour earlier
-    attributes.setOCC_HOUR(1300);
-    attributes.setWEEKDAY("WEDNESDAY");
-    attributes.setOFF_SUM("ASSAULT");
-    attributes.setOFF_CATEG("CRIMES AGAINST PERSON");
-    attributes.setNB_NAME_EN("Centretown");
-    attributes.setCENSUS_TRC("5050057.00");
-    attributes.setTOD("AFTERNOON");
-    attributes.setWARD("Ward 14");
-    attributes.setINTERSECTION("BANK ST & SOMERSET ST W");
+    attributes.setGO_Number("GO-" + objectId); // stable business key for tests
+
+    // Offence
+    attributes.setOffence_Summary("Crime Against Persons");
+    attributes.setOffence_Category("Assaults");
+
+    // Reported
+    attributes.setReported_Date(reportedDateMillis);
+    attributes.setReported_Year(2026);
+    attributes.setReported_Hour(14); // 2pm (0–23)
+
+    // Occurred
+    attributes.setOccurred_Date(reportedDateMillis - 3_600_000); // 1 hour earlier
+    attributes.setOccurred_Year(2026);
+    attributes.setOccurred_Hour(13);
+
+    // Time metadata
+    attributes.setTime_of_Day("Afternoon");
+    attributes.setWeek_Day("Wednesday");
+    attributes.setDay_of_Week("3");
+
+    // Location descriptors
+    attributes.setNeighbourhood("Centretown");
+    attributes.setSector("Sector 33");
+    attributes.setDivision("Central");
+    attributes.setWard("Ward 14");
+    attributes.setCouncillor("Jeff Leiper");
+    attributes.setIntersection("BANK ST & SOMERSET ST W");
 
     feature.setGeometry(geometry);
     feature.setAttributes(attributes);
@@ -37,8 +56,8 @@ public final class DummyFeatureFactory {
     return feature;
   }
 
-  // overload for basic dummy feature creation
+  // Convenience overload
   public static FeatureDTO createDummyFeature() {
-    return createDummyFeature(123456L, 1729036800000L);
+    return createDummyFeature(123456L, 1767243600000L);
   }
 }

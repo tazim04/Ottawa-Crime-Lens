@@ -4,7 +4,6 @@ import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
@@ -19,7 +18,7 @@ public class CrimeRecordMapper {
 
   private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
-  // Map OttawaCrimeApiResponse -> CrimeRecord entity for DB
+  // Map FeatureDTO -> CrimeRecord entity
   public CrimeRecord toEntity(FeatureDTO feature) {
 
     var attr = feature.getAttributes();
@@ -27,59 +26,46 @@ public class CrimeRecordMapper {
 
     CrimeRecord record = new CrimeRecord();
 
-    record.setIncidentId(attr.getOBJECTID());
+    // GO number
+    record.setGoNumber(attr.getGO_Number()); // NEW canonical business key
 
-    record.setYear(attr.getYEAR());
-    record.setReportedDate(toLocalDateTime(attr.getREP_DATE()));
-    record.setReportedHour(hhmmToLocalTime(attr.getREP_HOUR()));
+    // Reported times/dates
+    record.setReportedDate(toLocalDateTime(attr.getReported_Date()));
+    record.setReportedYear(attr.getReported_Year());
+    record.setReportedHour(attr.getReported_Hour()); // already 0–23
 
-    record.setOccurredDate(toLocalDateTime(attr.getOCC_DATE()));
-    record.setOccurredHour(hhmmToLocalTime(attr.getOCC_HOUR()));
+    // Occurred times/dates
+    record.setOccurredDate(toLocalDateTime(attr.getOccurred_Date()));
+    record.setOccurredYear(attr.getOccurred_Year());
+    record.setOccurredHour(attr.getOccurred_Hour());
 
-    record.setDayOfWeek(attr.getWEEKDAY());
+    // Offence details
+    record.setOffenceSummary(attr.getOffence_Summary());
+    record.setOffenceCategory(attr.getOffence_Category());
 
-    record.setOffenceSummary(attr.getOFF_SUM());
-    record.setOffenceCategory((attr.getOFF_CATEG()));
+    // Time metadata
+    record.setTimeOfDay(attr.getTime_of_Day());
+    record.setDayOfWeek(attr.getWeek_Day());
 
-    record.setNeighbourhood(attr.getNB_NAME_EN());
-    record.setCensusTract(attr.getCENSUS_TRC());
-    record.setWard(attr.getWARD());
-    record.setIntersection(attr.getINTERSECTION());
-    record.setTimeOfDay(attr.getTOD());
+    // Location descriptors
+    record.setIntersection(attr.getIntersection());
+    record.setNeighbourhood(attr.getNeighbourhood());
+    record.setWard(attr.getWard());
+    record.setCouncillor(attr.getCouncillor());
 
-    // Create a PostGIS point
+    // Geometry
     if (geom != null && geom.getX() != null && geom.getY() != null) {
-      Point point =
-          geometryFactory.createPoint(
-              new Coordinate(
-                  geom.getX(), // longitude
-                  geom.getY() // latitude
-                  ));
+      Point point = geometryFactory.createPoint(new Coordinate(geom.getX(), geom.getY()));
       record.setLocation(point);
     }
 
     return record;
   }
 
-  // Convert epochMillis timestamp into LocalDateTime format
+  // Convert epoch millis -> LocalDateTime (Toronto time)
   private LocalDateTime toLocalDateTime(Long epochMillis) {
     if (epochMillis == null) return null;
 
     return Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("America/Toronto")).toLocalDateTime();
-  }
-
-  // Convert Integer representation of hour to LocalTime
-  private LocalTime hhmmToLocalTime(Integer hhmm) {
-    if (hhmm == null) return null;
-
-    int hour = hhmm / 100;
-    int minute = hhmm % 100;
-
-    // defensive check
-    if (hour < 0 || hour > 23 || minute < 0 || minute > 59) {
-      throw new IllegalArgumentException("Invalid HHMM time: " + hhmm);
-    }
-
-    return LocalTime.of(hour, minute);
   }
 }

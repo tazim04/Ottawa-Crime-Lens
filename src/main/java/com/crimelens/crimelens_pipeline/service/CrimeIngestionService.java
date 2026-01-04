@@ -6,10 +6,8 @@ import com.crimelens.crimelens_pipeline.dto.IngestionResult;
 import com.crimelens.crimelens_pipeline.mapper.CrimeRecordMapper;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import com.crimelens.crimelens_pipeline.repository.CrimeRecordRepository;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,17 +25,13 @@ public class CrimeIngestionService {
 
   public IngestionResult run() {
     log.info("Ingestion in progress.........");
-    LocalDateTime lastRepDate =
-        Optional.ofNullable(repository.findLatestReportedDate())
-            .orElse(LocalDateTime.of(1970, 1, 1, 0, 0));
-    log.info("Last reported date: {}", lastRepDate);
     int offset = 0;
 
     int totalFetched = 0;
     int totalInserted = 0;
 
     while (true) {
-      List<FeatureDTO> features = apiClient.fetchCrimeData(offset, PAGE_SIZE, lastRepDate);
+      List<FeatureDTO> features = apiClient.fetchCrimeData(offset, PAGE_SIZE);
 
       if (features.isEmpty()) {
         log.info(

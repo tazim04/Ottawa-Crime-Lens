@@ -1,0 +1,46 @@
+name: CrimeLens CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---- CI ----
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Run tests
+        run: mvn test
+
+      - name: Build JAR
+        run: mvn package
+
+      # ---- CD ----
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: docker build -t crimelens-pipeline .
+
+      - name: Tag & Push image
+        run: |
+          docker tag crimelens-pipeline:latest \
+            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline:latest
+          docker push \
+            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline:latest

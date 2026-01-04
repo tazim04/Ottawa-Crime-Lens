@@ -41,6 +41,6 @@ jobs:
       - name: Tag & Push image
         run: |
           docker tag crimelens-pipeline:latest \
-            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline:latest
+            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens:latest
           docker push \
-            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline:latest
+            502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens:latest

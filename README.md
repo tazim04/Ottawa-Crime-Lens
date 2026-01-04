@@ -17,7 +17,7 @@ From the project root:
 
 Build the project:
 ```Bash
-mvn clean install -DSkipTests
+mvn clean install -DskipTests
 ```
 
 And run Docker compose:

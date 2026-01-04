@@ -1,0 +1,47 @@
+name: Deploy on Tag
+
+on:
+  push:
+    tags:
+      - "v*"
+      - "pipeline-*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Run tests (safety net)
+        run: mvn test
+
+      - name: Build JAR
+        run: mvn package
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ca-central-1
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Docker image
+        run: docker build -t crimelens-pipeline .
+
+      - name: Tag & Push Docker image
+        run: |
+          IMAGE=502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens-pipeline
+          docker tag crimelens-pipeline:latest $IMAGE:latest
+          docker tag crimelens-pipeline:latest $IMAGE:${GITHUB_REF_NAME}
+          docker push $IMAGE:latest
+          docker push $IMAGE:${GITHUB_REF_NAME}

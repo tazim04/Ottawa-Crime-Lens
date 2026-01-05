@@ -40,7 +40,6 @@ jobs:
       - name: Tag & Push Docker image
         run: |
           IMAGE=502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens
-          docker tag crimelens-pipeline:latest $IMAGE:latest
-          docker tag crimelens-pipeline:latest $IMAGE:${GITHUB_REF_NAME}
-          docker push $IMAGE:latest
-          docker push $IMAGE:${GITHUB_REF_NAME}
+          TAG=${GITHUB_REF_NAME}
+          docker tag crimelens-pipeline:latest $IMAGE:$TAG
+          docker push $IMAGE:$TAG

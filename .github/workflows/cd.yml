@@ -78,11 +78,4 @@ jobs:
         run: |
           aws ecs register-task-definition \
             --cli-input-json file://final-task-def.json
-
-      - name: Update ECS service
-        run: |
-          aws ecs update-service \
-            --cluster crimelens-cluster \
-            --service crimelens-pipeline \
-            --force-new-deployment
       ########################

@@ -12,6 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      ### Maven ###
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
@@ -23,7 +24,9 @@ jobs:
 
       - name: Build JAR
         run: mvn package
+        #############
 
+      ###  AWS Deployment  ###
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -43,3 +46,43 @@ jobs:
           TAG=${GITHUB_REF_NAME}
           docker tag crimelens-pipeline:latest $IMAGE:$TAG
           docker push $IMAGE:$TAG
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition crimelens-pipeline \
+            --query taskDefinition \
+            > task-def.json
+
+      - name: Inject new image into task definition
+        run: |
+          IMAGE=502867509200.dkr.ecr.ca-central-1.amazonaws.com/crimelens:${GITHUB_REF_NAME}
+
+          jq --arg IMAGE "$IMAGE" \
+            '.containerDefinitions[0].image = $IMAGE' \
+            task-def.json > new-task-def.json
+
+      - name: Clean task definition JSON
+        run: |
+          jq 'del(
+            .taskDefinitionArn,
+            .revision,
+            .status,
+            .requiresAttributes,
+            .compatibilities,
+            .registeredAt,
+            .registeredBy
+          )' new-task-def.json > final-task-def.json
+
+      - name: Register new task definition
+        run: |
+          aws ecs register-task-definition \
+            --cli-input-json file://final-task-def.json
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster crimelens-cluster \
+            --service crimelens-pipeline \
+            --force-new-deployment
+      ########################

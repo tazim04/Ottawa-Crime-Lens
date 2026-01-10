@@ -32,7 +32,7 @@ Status: RUNNING
   public String buildSuccessMessage(
       String runId, Duration durationSeconds, int fetched, int inserted, int duplicates) {
     return """
-🚔 CrimeLens Pipeline Completed ✅
+CrimeLens Pipeline Completed ✅
 
 Environment: %s
 Run ID: %s

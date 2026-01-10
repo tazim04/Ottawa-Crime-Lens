@@ -13,13 +13,17 @@ public class CrimeRecord {
 
   // Primary Key (DB-generated, no business meaning)
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "crime_records_gen")
+  @SequenceGenerator(
+      name = "crime_records_gen",
+      sequenceName = "crime_records_id_seq",
+      allocationSize = 1000)
   @Column(name = "id")
   private Long id;
 
   // Police report identifier
-  @Column(name = "go_number", unique = false)
-  private String goNumber; // Nullable for legacy data (2018 - 2024)
+  @Column(name = "go_number", unique = true, nullable = false)
+  private String goNumber;
 
   // Reported times/dates
   @Column(name = "reported_date")
@@ -61,12 +65,6 @@ public class CrimeRecord {
 
   @Column(name = "neighbourhood")
   private String neighbourhood;
-
-  @Column(name = "ward")
-  private String ward;
-
-  @Column(name = "councillor")
-  private String councillor;
 
   // Source
   @Enumerated(EnumType.STRING)

@@ -1,10 +1,9 @@
 package com.crimelens.crimelens_pipeline.mapper;
 
+import static com.crimelens.crimelens_pipeline.mapper.utils.MapperUtils.toLocalDateTime;
+
 import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -50,8 +49,6 @@ public class CrimeRecordMapper {
     // Location descriptors
     record.setIntersection(attr.getIntersection());
     record.setNeighbourhood(attr.getNeighbourhood());
-    record.setWard(attr.getWard());
-    record.setCouncillor(attr.getCouncillor());
 
     // Geometry
     if (geom != null && geom.getX() != null && geom.getY() != null) {
@@ -60,12 +57,5 @@ public class CrimeRecordMapper {
     }
 
     return record;
-  }
-
-  // Convert epoch millis -> LocalDateTime (Toronto time)
-  private LocalDateTime toLocalDateTime(Long epochMillis) {
-    if (epochMillis == null) return null;
-
-    return Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("America/Toronto")).toLocalDateTime();
   }
 }

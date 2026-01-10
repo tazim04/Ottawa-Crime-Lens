@@ -1,2 +1,0 @@
--- V4__legacy_backfill_marker.sql
--- Backfill handled via one-time batch job

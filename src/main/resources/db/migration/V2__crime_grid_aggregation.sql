@@ -13,14 +13,36 @@ SELECT
         WHERE reported_date > NOW() - INTERVAL '1 year'
         ) AS crimes_last_year,
 
-    MODE() WITHIN GROUP (ORDER BY offence_category) AS most_common_crime,
+    COUNT(*) FILTER (
+        WHERE reported_date > NOW() - INTERVAL '5 years'
+        ) AS crimes_last_5_years,
+
+    COUNT(*) FILTER (
+        WHERE reported_date > NOW() - INTERVAL '10 years'
+        ) AS crimes_last_10_years,
+
+    MODE() WITHIN GROUP (ORDER BY offence_category)
+                                  AS most_common_crime_all_time,
+
+    MODE() WITHIN GROUP (ORDER BY offence_category)
+    FILTER (WHERE reported_date > NOW() - INTERVAL '1 year')
+                                  AS most_common_crime_last_year,
+
+    MODE() WITHIN GROUP (ORDER BY offence_category)
+    FILTER (WHERE reported_date > NOW() - INTERVAL '5 years')
+                                  AS most_common_crime_last_5_years,
+
+    MODE() WITHIN GROUP (ORDER BY offence_category)
+    FILTER (WHERE reported_date > NOW() - INTERVAL '10 years')
+                                  AS most_common_crime_last_10_years,
 
     MIN(reported_date) AS first_reported,
     MAX(reported_date) AS last_reported
 
 FROM crime_records
+WHERE location IS NOT NULL
 GROUP BY grid;
 
-CREATE INDEX IF NOT EXISTS idx_crime_stats_grid_geom
+CREATE INDEX idx_crime_stats_grid_geom
     ON crime_stats_grid
         USING GIST (grid);

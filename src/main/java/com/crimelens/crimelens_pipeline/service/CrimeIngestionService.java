@@ -5,7 +5,7 @@ import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.dto.IngestionResult;
 import com.crimelens.crimelens_pipeline.mapper.CrimeRecordMapper;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
-import com.crimelens.crimelens_pipeline.repository.CrimeRecordRepository;
+import com.crimelens.crimelens_pipeline.repository.CrimeRecordBatchRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class CrimeIngestionService {
   private static final int PAGE_SIZE = 2000;
 
   private final OttawaCrimeApiClient apiClient;
-  private final CrimeRecordRepository repository;
+  private final CrimeRecordBatchRepository batchRepository;
   private final CrimeRecordMapper mapper;
 
   public IngestionResult run() {
@@ -49,9 +49,14 @@ public class CrimeIngestionService {
         records.add(mapper.toEntity(f));
       }
 
-      // Store in DB
-      repository.saveAll(records);
-      totalInserted += records.size();
+      // Batch insert, ignoring duplicates by go_number
+      int inserted = batchRepository.insertBatchIgnore(records);
+      totalInserted += inserted;
+
+      if (inserted < records.size()) {
+        log.debug("Skipped {} duplicates at offset={}", records.size() - inserted, offset);
+      }
+
       log.info("Inserted {} records so far (offset={})", totalInserted, offset);
       offset += PAGE_SIZE;
     }

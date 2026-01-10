@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-@Profile("!integration")
+@Profile("!integration && !legacy")
 @RequiredArgsConstructor
 public class CrimeIngestionPipelineRunner implements CommandLineRunner {
 

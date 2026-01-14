@@ -1,6 +1,6 @@
 package com.crimelens.crimelens_pipeline.mapper;
 
-import static com.crimelens.crimelens_pipeline.mapper.utils.MapperUtils.toLocalDateTime;
+import static com.crimelens.crimelens_pipeline.mapper.utils.MapperUtils.toLocalDate;
 
 import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
@@ -29,12 +29,12 @@ public class CrimeRecordMapper {
     record.setGoNumber(attr.getGO_Number()); // NEW canonical business key
 
     // Reported times/dates
-    record.setReportedDate(toLocalDateTime(attr.getReported_Date()));
+    record.setReportedDate(toLocalDate(attr.getReported_Date()));
     record.setReportedYear(attr.getReported_Year());
     record.setReportedHour(attr.getReported_Hour()); // already 0–23
 
     // Occurred times/dates
-    record.setOccurredDate(toLocalDateTime(attr.getOccurred_Date()));
+    record.setOccurredDate(toLocalDate(attr.getOccurred_Date()));
     record.setOccurredYear(attr.getOccurred_Year());
     record.setOccurredHour(attr.getOccurred_Hour());
 

@@ -2,7 +2,7 @@ package com.crimelens.crimelens_pipeline.model;
 
 import com.crimelens.crimelens_pipeline.enums.CrimeSource;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import lombok.Data;
 import org.locationtech.jts.geom.Point;
 
@@ -27,7 +27,7 @@ public class CrimeRecord {
 
   // Reported times/dates
   @Column(name = "reported_date")
-  private LocalDateTime reportedDate;
+  private LocalDate reportedDate;
 
   @Column(name = "reported_year")
   private Integer reportedYear;
@@ -37,7 +37,7 @@ public class CrimeRecord {
 
   // Occurred times/dates
   @Column(name = "occurred_date")
-  private LocalDateTime occurredDate;
+  private LocalDate occurredDate;
 
   @Column(name = "occurred_year")
   private Integer occurredYear;

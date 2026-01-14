@@ -29,9 +29,6 @@ This will:
 * Start a PostGIS-enabled PostgreSQL database
 * Build and run the CrimeLens pipeline service
 * Automatically apply Flyway migrations
-* Run the ingestion pipeline according to the active Spring profile
-  * For a better dev experience, create a `.env` file and set `SPRING_PROFILES_ACTIVE=dev`
-  * This will run the pipeline on start up, and only once (scheduled job is specific to PROD)
 
 ### To stop the application:
 ```Bash

@@ -1,21 +1,17 @@
 package com.crimelens.crimelens_pipeline.mapper;
 
 import static com.crimelens.crimelens_pipeline.mapper.utils.MapperUtils.toLocalDate;
+import static com.crimelens.crimelens_pipeline.mapper.utils.MapperUtils.toPoint4326;
 
 import com.crimelens.crimelens_pipeline.dto.FeatureDTO;
 import com.crimelens.crimelens_pipeline.model.CrimeRecord;
 import lombok.RequiredArgsConstructor;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class CrimeRecordMapper {
-
-  private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
 
   // Map FeatureDTO -> CrimeRecord entity
   public CrimeRecord toEntity(FeatureDTO feature) {
@@ -52,7 +48,7 @@ public class CrimeRecordMapper {
 
     // Geometry
     if (geom != null && geom.getX() != null && geom.getY() != null) {
-      Point point = geometryFactory.createPoint(new Coordinate(geom.getX(), geom.getY()));
+      Point point = toPoint4326(geom.getX(), geom.getY());
       record.setLocation(point);
     }
 

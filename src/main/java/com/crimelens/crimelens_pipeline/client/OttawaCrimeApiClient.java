@@ -35,6 +35,7 @@ public class OttawaCrimeApiClient {
                           .queryParam("returnGeometry", true)
                           .queryParam("resultRecordCount", pageSize)
                           .queryParam("resultOffset", offset)
+                          .queryParam("outSR", 4326)
                           .queryParam("f", "json")
                           .build();
                   log.debug("ArcGIS request URI: {}", uri);

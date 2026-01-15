@@ -14,10 +14,9 @@ import org.locationtech.jts.geom.*;
 @RequiredArgsConstructor
 public class MapperUtils {
 
-  private static final GeometryFactory GEOMETRY_FACTORY =
-      new GeometryFactory(new PrecisionModel(), 32618);
+  private static final GeometryFactory GEOM_UTM =
+      new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 0);
 
-  // Cached MathTransform
   private static volatile MathTransform TRANSFORM;
 
   private static MathTransform transform() {
@@ -25,9 +24,12 @@ public class MapperUtils {
       synchronized (MapperUtils.class) {
         if (TRANSFORM == null) {
           try {
-            TRANSFORM =
-                CRS.findMathTransform(
-                    CRS.decode("EPSG:32618", true), CRS.decode("EPSG:4326", true), true);
+            // UTM: native axis order (Easting, Northing)
+            var sourceCRS = CRS.decode("EPSG:32618");
+
+            // WGS84: force lon, lat (XY)
+            var targetCRS = CRS.decode("EPSG:4326", true);
+            TRANSFORM = CRS.findMathTransform(sourceCRS, targetCRS, false);
           } catch (FactoryException e) {
             throw new IllegalStateException("CRS transform init failed", e);
           }
@@ -37,23 +39,20 @@ public class MapperUtils {
     return TRANSFORM;
   }
 
+  public static Point toPoint4326(double easting, double northing) {
+    try {
+      Point utm = GEOM_UTM.createPoint(new Coordinate(easting, northing));
+      Geometry transformed = JTS.transform(utm, transform());
+      transformed.setSRID(4326);
+      return (Point) transformed;
+    } catch (TransformException e) {
+      throw new IllegalArgumentException("CRS transform failed", e);
+    }
+  }
+
   // Convert epoch millis -> LocalDate (Toronto time)
   public static LocalDate toLocalDate(Long epochMillis) {
     if (epochMillis == null) return null;
     return Instant.ofEpochMilli(epochMillis).atZone(ZoneId.of("America/Toronto")).toLocalDate();
-  }
-
-  // Convert 32618 to 4326
-  public static Point toPoint4326(double x, double y) {
-    try {
-      Point utm = GEOMETRY_FACTORY.createPoint(new Coordinate(x, y));
-      utm.setSRID(32618);
-
-      Geometry g = JTS.transform(utm, transform());
-      g.setSRID(4326);
-      return (Point) g;
-    } catch (TransformException e) {
-      throw new IllegalArgumentException("CRS transform failed", e);
-    }
   }
 }

@@ -13,8 +13,8 @@ public final class DummyFeatureFactory {
     FeatureDTO feature = new FeatureDTO();
 
     GeometryDTO geometry = new GeometryDTO();
-    geometry.setX(371071.72);
-    geometry.setY(5030273.56);
+    geometry.setX(446000.0);
+    geometry.setY(5039000.0);
 
     // Attributes (YTD schema)
     AttributesDTO attributes = new AttributesDTO();

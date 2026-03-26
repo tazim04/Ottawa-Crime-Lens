@@ -40,6 +40,25 @@ The platform is composed of multiple services working together:
 
 ---
 
+## ML Service Workflow (Short Overview)
+
+1. **Input from CrimeLens data**  
+	The ML service reads the latest cleaned and grid-aggregated crime records produced by the ingestion pipeline.
+
+2. **Feature building**  
+	For each grid cell and time window, the pipeline builds numeric features that summarize crime behavior (for example: incident counts, category mix, recent trend/change, and spatial context). These features convert raw events into a model-ready vector per grid/time slice.
+
+3. **Training with Isolation Forest**  
+	The model is trained in an unsupervised way on historical feature vectors. Isolation Forest learns what "normal" crime patterns look like by randomly partitioning the feature space; points that are isolated in fewer splits are treated as more anomalous.
+
+4. **Scoring**  
+	The trained model scores the latest feature vectors and outputs an anomaly score (and anomaly flag) per grid cell/time slice, where more extreme scores indicate less typical crime activity versus historical baseline.
+
+5. **Write-back to database**  
+	Final scores are persisted to PostgreSQL/PostGIS in the `crime_anomaly_scores` table. The backend APIs service then reads these scored results so the frontend can render anomaly triage labels.
+
+---
+
 ## Architecture
 
 ![System Diagram](./imgs/crimelens_system.png)

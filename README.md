@@ -22,7 +22,7 @@ The platform is composed of multiple services working together:
 | Component | Description | Link |
 |----------|------------|------|
 | Frontend | User-facing dashboard for visualizing crime data | https://github.com/tazim04/ottawa-crime-lens-frontend |
-| Backend API | REST API for querying processed crime data | https://github.com/tazim04/Ottawa-Crime-Lens-Query |
+| Backend APIs | REST APIs for querying processed crime data | https://github.com/tazim04/Ottawa-Crime-Lens-Query |
 | Ingestion Pipeline | Scheduled pipeline to ingest and store crime data | https://github.com/tazim04/Ottawa-Crime-Lens-Pipeline |
 | ML Pipeline | Detects anomalous crime patterns across grid cells | https://github.com/tazim04/ottawa-crimelens-ml |
 

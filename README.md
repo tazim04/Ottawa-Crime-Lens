@@ -6,13 +6,13 @@ A geospatial crime analysis platform that ingests, processes, and detects anomal
 
 ## Overview
 
-Ottawa CrimeLens is a full-stack distributed system designed to analyze crime data across spatial grids and surface anomalous activity patterns.
+Ottawa CrimeLens is a full-stack distributed system designed to analyze Ottawa crime data across spatial grids and surface anomalous activity patterns.
 
 The platform is composed of multiple services working together:
 
 - Data ingestion pipeline (Spring Boot)
 - ML anomaly detection pipeline (Python + Isolation Forest)
-- Backend API (Spring Boot)
+- Backend API service (Spring Boot)
 - Frontend dashboard (React + TypeScript)
 
 ---
@@ -21,27 +21,28 @@ The platform is composed of multiple services working together:
 
 | Component | Description | Link |
 |----------|------------|------|
-| Frontend | User-facing dashboard for visualizing crime data | https://github.com/your-username/frontend-repo |
-| Backend API | REST API for querying processed crime data | https://github.com/your-username/backend-repo |
-| Ingestion Pipeline | Scheduled pipeline to ingest and store crime data | https://github.com/your-username/ingestion-repo |
-| ML Pipeline | Detects anomalous crime patterns across grid cells | https://github.com/your-username/ml-repo |
+| Frontend | User-facing dashboard for visualizing crime data | https://github.com/tazim04/ottawa-crime-lens-frontend |
+| Backend API | REST API for querying processed crime data | https://github.com/tazim04/Ottawa-Crime-Lens-Query |
+| Ingestion Pipeline | Scheduled pipeline to ingest and store crime data | https://github.com/tazim04/Ottawa-Crime-Lens-Pipeline |
+| ML Pipeline | Detects anomalous crime patterns across grid cells | https://github.com/tazim04/ottawa-crimelens-ml |
 
 ---
 
 ## System Flow
 
-1. EventBridge triggers the ingestion pipeline daily
-2. Ingestion service fetches and stores crime data in PostgreSQL/PostGIS
-3. Step Functions orchestrates the ML scoring pipeline
-4. ML pipeline computes anomaly scores per grid cell
-5. Backend API serves processed data
-6. Frontend visualizes anomalies on an interactive map
+1. EventBridge triggers a Step Functions workflow daily
+2. Step Functions runs the ingestion pipeline first
+3. Ingestion service fetches and stores crime data in PostgreSQL/PostGIS
+4. Step Functions then runs the ML scoring pipeline
+5. ML pipeline computes anomaly scores per grid cell
+6. Backend API serves processed data
+7. Frontend visualizes anomalies on an interactive map (maplibre)
 
 ---
 
 ## Architecture
 
-![System Diagram](./architecture/system-diagram.png)
+![System Diagram](./imgs/crimelens_system.png)
 
 ---
 
@@ -49,8 +50,8 @@ The platform is composed of multiple services working together:
 
 - **Frontend:** React, TypeScript  
 - **Backend:** Spring Boot (Java)  
-- **ML:** Python, scikit-learn (Isolation Forest)  
-- **Database:** PostgreSQL + PostGIS  
+- **ML:** Python, scikit-learn (Isolation Forest)
+- **Database:** PostgreSQL + PostGIS (Neon)
 - **Infrastructure:** Docker, AWS ECS Fargate, EventBridge, Step Functions  
 
 ---
@@ -60,8 +61,8 @@ The platform is composed of multiple services working together:
 - All services are containerized using Docker
 - Images are stored in AWS ECR
 - ECS Fargate is used to run scheduled and on-demand tasks
-- EventBridge triggers ingestion and orchestration workflows
-- Step Functions manages multi-step pipelines (ingestion → ML scoring)
+- EventBridge triggers the Step Functions orchestration workflow as a daily cron job
+- Step Functions manages multi-step pipeline (ingestion -> ML scoring)
 
 ---
 
@@ -70,16 +71,7 @@ The platform is composed of multiple services working together:
 - Used **Isolation Forest** for unsupervised anomaly detection on crime patterns
 - Designed **daily batch scoring** instead of real-time processing for simplicity and cost efficiency
 - Leveraged **PostGIS** for spatial aggregation and grid-based analysis
-- Separated ingestion, ML, and API into independent services for scalability
-
----
-
-## Future Improvements
-
-- Real-time data ingestion and streaming pipeline
-- More advanced anomaly detection models
-- Alerting system for high-risk areas
-- Improved model explainability and visualization
+- Separated ingestion, ML, and APIs into independent services for scalability and modularity
 
 ---
 
@@ -91,4 +83,4 @@ https://www.ottawacrimelens.ca/
 
 ## Author
 
-Built by Kylan
+Built by Tazim Khan

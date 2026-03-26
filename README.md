@@ -72,6 +72,7 @@ The platform is composed of multiple services working together:
 - Designed **daily batch scoring** instead of real-time processing for simplicity and cost efficiency
 - Leveraged **PostGIS** for spatial aggregation and grid-based analysis
 - Separated ingestion, ML, and APIs into independent services for scalability and modularity
+- Deployed Backend APIs service locally on-prem to avoid always-on cloud costs
 
 ---
 

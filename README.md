@@ -50,6 +50,7 @@ The platform is composed of multiple services working together:
 
 3. **Training with Isolation Forest**  
 	The model is trained in an unsupervised way on historical feature vectors. Isolation Forest learns what "normal" crime patterns look like by randomly partitioning the feature space; points that are isolated in fewer splits are treated as more anomalous.
+	For now, training is run manually in a local environment. A planned next step is to automate retraining in AWS as a weekly cron job that trains on the latest newly ingested data.
 
 4. **Scoring**  
 	The trained model scores the latest feature vectors and outputs an anomaly score (and anomaly flag) per grid cell/time slice, where more extreme scores indicate less typical crime activity versus historical baseline.

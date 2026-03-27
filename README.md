@@ -105,3 +105,5 @@ https://www.ottawacrimelens.ca/
 ## Author
 
 Built by Tazim Khan
+
+Made with ❤️ for the Ottawa community

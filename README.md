@@ -36,7 +36,7 @@ The platform is composed of multiple services working together:
 4. Step Functions then runs the ML scoring pipeline
 5. ML pipeline computes anomaly scores per grid cell
 6. Backend API serves processed data
-7. Frontend visualizes anomalies on an interactive map (maplibre)
+7. Frontend visualizes crime data and anomalies on an interactive map (maplibre)
 
 ---
 

@@ -40,6 +40,12 @@ The platform is composed of multiple services working together:
 
 ---
 
+## System Architecture
+
+![System Diagram](./imgs/crimelens_system.png)
+
+---
+
 ## ML Service Workflow (Short Overview)
 
 1. **Input from CrimeLens data**  
@@ -50,19 +56,13 @@ The platform is composed of multiple services working together:
 
 3. **Training with Isolation Forest**  
 	The model is trained in an unsupervised way on historical feature vectors. Isolation Forest learns what "normal" crime patterns look like by randomly partitioning the feature space; points that are isolated in fewer splits are treated as more anomalous.
-	For now, training is run manually in a local environment. A planned next step is to automate retraining in AWS as a weekly cron job that trains on the latest newly ingested data.
+	Training is automated on AWS as a weekly cron job, retraining on the latest newly ingested data. At the end of training, the model artifact is serialized as a `joblib` file and pushed to Amazon S3.
 
 4. **Scoring**  
-	The trained model scores the latest feature vectors and outputs an anomaly score (and anomaly flag) per grid cell/time slice, where more extreme scores indicate less typical crime activity versus historical baseline.
+	During scoring, the latest `joblib` model artifact is pulled from Amazon S3 and used to score the newest feature vectors. The pipeline outputs an anomaly score (and anomaly flag) per grid cell/time slice, where more extreme scores indicate less typical crime activity versus historical baseline.
 
 5. **Write-back to database**  
 	Final scores are persisted to PostgreSQL/PostGIS in the `crime_anomaly_scores` table. The backend APIs service then reads these scored results so the frontend can render anomaly triage labels.
-
----
-
-## Architecture
-
-![System Diagram](./imgs/crimelens_system.png)
 
 ---
 

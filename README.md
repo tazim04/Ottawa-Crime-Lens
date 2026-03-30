@@ -110,7 +110,7 @@ As you zoom in further, the map transitions from summarized grid cells to indivi
 - **Backend:** Spring Boot (Java)  
 - **ML:** Python, scikit-learn (Isolation Forest)
 - **Database:** PostgreSQL + PostGIS (Neon)
-- **Infrastructure:** Docker, AWS ECS Fargate, EventBridge, Step Functions  
+- **Infrastructure:** Docker, AWS ECS Fargate, EventBridge, Step Functions, S3
 
 ---
 
@@ -120,7 +120,9 @@ As you zoom in further, the map transitions from summarized grid cells to indivi
 - Images are stored in AWS ECR
 - ECS Fargate is used to run scheduled and on-demand tasks
 - EventBridge triggers the Step Functions orchestration workflow as a daily cron job
-- Step Functions manages multi-step pipeline (ingestion -> ML scoring)
+	- Step Functions manages multi-step pipeline (ingestion -> ML scoring)
+- EventBridge also triggers the training workflow as a weekly cron job
+- Trained model is stored in an S3 bucket, which is accessed by the daily ML scoring job
 
 ---
 

@@ -30,13 +30,14 @@ The platform is composed of multiple services working together:
 
 ## System Flow
 
-1. EventBridge triggers a Step Functions workflow daily
-2. Step Functions runs the ingestion pipeline first
-3. Ingestion service fetches and stores crime data in PostgreSQL/PostGIS
-4. Step Functions then runs the ML scoring pipeline
-5. ML pipeline computes anomaly scores per grid cell
-6. Backend API serves processed data
-7. Frontend visualizes crime data and anomalies on an interactive map (maplibre)
+1. EventBridge triggers the main Step Functions workflow daily.
+2. The workflow runs ingestion first, and the ingestion service fetches/stores fresh crime data in PostgreSQL/PostGIS.
+3. After ingestion, the scoring service starts and pulls the latest model artifact from Amazon S3.
+4. The scoring service computes anomaly scores per grid cell and writes results to PostgreSQL/PostGIS.
+5. In parallel to the daily scoring loop, a separate weekly EventBridge cron triggers the training workflow.
+6. The training service retrains the Isolation Forest model on the latest crime data and pushes a new `joblib` artifact to Amazon S3.
+7. The next daily scoring run automatically consumes that newly published S3 artifact, creating a continuous train-then-serve cycle rather than a strictly linear pipeline.
+8. Backend APIs serve scored data and the frontend visualizes crime activity and anomalies on the interactive map (maplibre).
 
 ---
 

@@ -49,6 +49,8 @@ The platform is composed of multiple services working together:
 
 ## How to Use the Dashboard
 
+https://www.ottawacrimelens.ca/
+
 ### 1) Area Crime Statistics (Grid View)
 
 ![Area Crime Statistics](./imgs/image.png)

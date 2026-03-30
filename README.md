@@ -47,6 +47,41 @@ The platform is composed of multiple services working together:
 
 ---
 
+## How to Use the Dashboard
+
+### 1) Area Crime Statistics (Grid View)
+
+![Area Crime Statistics](./imgs/image.png)
+
+When you first open the map, you will see grid-based area statistics. Each grid cell summarizes crime activity for that area and helps you compare neighborhoods quickly.
+
+- **Crime Count By Time Window:** Number of crime incidents in that grid area for x time period.
+- **Avg / year:** Average number of crimes incidents per year.
+- **Common Offences:** Breakdown of the most common offence types (for example theft, assault, mischief) within the selected area.
+- **Anomaly Triage:** A label applied to every grid-cell based on a computed anomaly score from the ML pipeline.
+
+>NOTE: The label `unscored` means that the selected grid-cell did not have enough recent crime activity to form a reasonable baseline to compute an anomaly score (typically in low crime areas.. must be a safe place!!!).
+
+### 2) Zoomed-In View (Individual Crimes)
+
+![Zoomed-In Individual Crimes](./imgs/image_2.png)
+
+As you zoom in further, the map transitions from summarized grid cells to individual crime points/events.
+
+- Each marker represents a specific reported incident.
+- This view is designed for street-level inspection and local pattern discovery.
+- Use this mode to investigate exactly where incidents occurred, not just which larger area is active.
+
+### 3) Address Bar and Filters
+
+![Address and Filters](./imgs/image_3.png)
+
+- **Address bar:** Lets you jump directly to a location instead of manually panning/zooming.
+- **Filters panel:** Refines visible incidents by available dimensions (such as type or timeframe) for focused analysis.
+- **Important behavior:** Filters apply only to the zoomed-in individual crime view, not to the area/grid summary view.
+
+---
+
 ## ML Service Workflow (Short Overview)
 
 1. **Input from CrimeLens data**  

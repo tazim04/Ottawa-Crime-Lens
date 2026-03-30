@@ -62,7 +62,9 @@ When you first open the map, you will see grid-based area statistics. Each grid 
 - **Common Offences:** Breakdown of the most common offence types (for example theft, assault, mischief) within the selected area.
 - **Anomaly Triage:** A label applied to every grid-cell based on a computed anomaly score from the ML pipeline.
 
->NOTE: The label `unscored` means that the selected grid-cell did not have enough recent crime activity to form a reasonable baseline to compute an anomaly score (typically in low crime areas.. must be a safe place!!!).
+>NOTE: Grid-cell colors represent crime density, not anomaly triage.
+
+>NOTE: The label triage `unscored` means that the selected grid-cell did not have enough recent crime activity to form a reasonable baseline to compute an anomaly score (typically in low crime areas.. must be a safe place!!!).
 
 ### 2) Zoomed-In View (Individual Crimes)
 
